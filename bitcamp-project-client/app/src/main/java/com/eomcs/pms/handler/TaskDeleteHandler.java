@@ -1,36 +1,26 @@
 package com.eomcs.pms.handler;
 
-import java.util.List;
-import com.eomcs.pms.domain.Task;
+import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
 
-public class TaskDeleteHandler extends AbstractTaskHandler {
-
-  public TaskDeleteHandler(List<Task> taskList) {
-    super(taskList);
-  }
+public class TaskDeleteHandler implements Command {
 
   @Override
-  public void service() {
+  public void service(Statement stmt) throws Exception {
     System.out.println("[작업 삭제]");
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = findByNo(no);
-    if (task == null) {
-      System.out.println("해당 번호의 작업이 없습니다.");
+    stmt.executeQuery("task/select", Integer.toString(no));
+
+    String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
+    if (!input.equalsIgnoreCase("Y")) {
+      System.out.println("작업 삭제를 취소하였습니다.");
       return;
     }
 
-    String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
+    stmt.executeUpdate("task/delete", Integer.toString(no));
 
-    if (input.equalsIgnoreCase("Y")) {
-      taskList.remove(task);
-      System.out.println("작업을 삭제하였습니다.");
-
-    } else {
-      System.out.println("작업 삭제를 취소하였습니다.");
-    }
-
+    System.out.println("작업을 삭제하였습니다.");
   }
 }

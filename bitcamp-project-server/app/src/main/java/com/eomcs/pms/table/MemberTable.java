@@ -24,9 +24,12 @@ public class MemberTable implements DataTable {
 
     switch (request.getCommand()) {
       case "member/insert":
+
         fields = request.getData().get(0).split(",");
+
         member = new Member();
 
+        // 새 회원의 번호
         if (list.size() > 0) {
           member.setNo(list.get(list.size() - 1).getNo() + 1);
         } else {
@@ -41,6 +44,7 @@ public class MemberTable implements DataTable {
         member.setRegisteredDate(new Date(System.currentTimeMillis()));
 
         list.add(member);
+
         JsonFileHandler.saveObjects(jsonFile, list);
         break;
       case "member/selectall":
@@ -57,7 +61,23 @@ public class MemberTable implements DataTable {
           response.appendData(String.format("%d,%s,%s,%s,%s,%s", 
               member.getNo(), 
               member.getName(), 
-              member.getEmail(), 
+              member.getEmail(),
+              member.getPhoto(),
+              member.getTel(),
+              member.getRegisteredDate()));
+        } else {
+          throw new Exception("해당 번호의 회원이 없습니다.");
+        }
+        break;
+      case "member/selectByName":
+        String name = request.getData().get(0);
+
+        member = getMemberByName(name);
+        if (member != null) {
+          response.appendData(String.format("%d,%s,%s,%s,%s,%s", 
+              member.getNo(), 
+              member.getName(), 
+              member.getEmail(),
               member.getPhoto(),
               member.getTel(),
               member.getRegisteredDate()));
@@ -72,6 +92,7 @@ public class MemberTable implements DataTable {
         if (member == null) {
           throw new Exception("해당 번호의 회원이 없습니다.");
         }
+
         member.setName(fields[1]);
         member.setEmail(fields[2]);
         member.setPhoto(fields[3]);
@@ -103,24 +124,13 @@ public class MemberTable implements DataTable {
     }
     return null;
   }
+
+  private Member getMemberByName(String name) {
+    for (Member m : list) {
+      if (m.getName().equals(name)) {
+        return m;
+      }
+    }
+    return null;
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

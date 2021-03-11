@@ -1,25 +1,25 @@
 package com.eomcs.pms.handler;
 
 import java.util.Iterator;
-import java.util.List;
-import com.eomcs.pms.domain.Project;
+import com.eomcs.driver.Statement;
 
-public class ProjectListHandler extends AbstractProjectHandler {
-
-  public ProjectListHandler(List<Project> projectList) {
-    super(projectList);
-  }
+public class ProjectListHandler implements Command {
 
   @Override
-  public void service() {
+  public void service(Statement stmt) throws Exception {
     System.out.println("[프로젝트 목록]");
 
-    Iterator<Project> iterator = projectList.iterator();
+    Iterator<String> results = stmt.executeQuery("project/selectall");
 
-    while (iterator.hasNext()) {
-      Project p = iterator.next();
-      System.out.printf("%d, %s, %s, %s, %s, [%s]\n",
-          p.getNo(), p.getTitle(), p.getStartDate(), p.getEndDate(), p.getOwner(), p.getMembers());
+    while (results.hasNext()) {
+      String[] fields = results.next().split(",");
+      System.out.printf("%s, %s, %s, %s, %s, [%s]\n",
+          fields[0], 
+          fields[1], 
+          fields[2],
+          fields[3],
+          fields[4],
+          fields[5]);
     }
   }
 }

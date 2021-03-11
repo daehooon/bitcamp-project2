@@ -1,25 +1,25 @@
 package com.eomcs.pms.handler;
 
 import java.util.Iterator;
-import java.util.List;
+import com.eomcs.driver.Statement;
 import com.eomcs.pms.domain.Task;
 
-public class TaskListHandler extends AbstractTaskHandler {
-
-  public TaskListHandler(List<Task> taskList) {
-    super(taskList);
-  }
+public class TaskListHandler implements Command {
 
   @Override
-  public void service() {
+  public void service(Statement stmt) throws Exception {
     System.out.println("[작업 목록]");
 
-    Iterator<Task> iterator = taskList.iterator();
+    Iterator<String> results = stmt.executeQuery("task/selectall");
 
-    while (iterator.hasNext()) {
-      Task t = iterator.next();
-      System.out.printf("%d, %s, %s, %s, %s\n", 
-          t.getNo(), t.getContent(), t.getDeadline(), getStatusLabel(t.getStatus()), t.getOwner());
+    while (results.hasNext()) {
+      String[] fields = results.next().split(",");
+      System.out.printf("%s, %s, %s, %s, %s\n", 
+          fields[0], 
+          fields[1], 
+          fields[2],
+          Task.getStatusLabel(Integer.parseInt(fields[3])),
+          fields[4]);
     }
   }
 }

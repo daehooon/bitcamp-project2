@@ -1,31 +1,22 @@
 package com.eomcs.pms.handler;
 
-import java.util.List;
+import com.eomcs.driver.Statement;
 import com.eomcs.pms.domain.Task;
 import com.eomcs.util.Prompt;
 
-public class TaskDetailHandler extends AbstractTaskHandler {
-
-  public TaskDetailHandler(List<Task> taskList) {
-    super(taskList);
-  }
+public class TaskDetailHandler implements Command {
 
   @Override
-  public void service() {
+  public void service(Statement stmt) throws Exception {
     System.out.println("[작업 상세보기]");
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = findByNo(no);
-    if (task == null) {
-      System.out.println("해당 번호의 작업이 없습니다.");
-      return;
-    }
+    String[] fields = stmt.executeQuery("task/select", Integer.toString(no)).next().split(",");
 
-    System.out.printf("내용: %s\n", task.getContent());
-    System.out.printf("마감일: %s\n", task.getDeadline());
-    System.out.printf("상태: %s\n", getStatusLabel(task.getStatus()));
-    System.out.printf("담당자: %s\n", task.getOwner());
-
+    System.out.printf("내용: %s\n", fields[1]);
+    System.out.printf("마감일: %s\n", fields[2]);
+    System.out.printf("상태: %s\n", Task.getStatusLabel(Integer.parseInt(fields[3])));
+    System.out.printf("담당자: %s\n", fields[4]);
   }
 }
