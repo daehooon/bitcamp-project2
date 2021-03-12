@@ -6,8 +6,14 @@ import com.eomcs.util.Prompt;
 
 public class TaskDetailHandler implements Command {
 
+  Statement stmt;
+
+  public TaskDetailHandler(Statement stmt) {
+    this.stmt = stmt;
+  }
+
   @Override
-  public void service(Statement stmt) throws Exception {
+  public void service() throws Exception {
     System.out.println("[작업 상세보기]");
 
     int no = Prompt.inputInt("번호? ");
@@ -19,4 +25,5 @@ public class TaskDetailHandler implements Command {
     System.out.printf("상태: %s\n", Task.getStatusLabel(Integer.parseInt(fields[3])));
     System.out.printf("담당자: %s\n", fields[4]);
   }
+
 }
