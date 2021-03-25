@@ -1,33 +1,40 @@
 package com.eomcs.pms.handler;
 
-import com.eomcs.driver.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import com.eomcs.util.Prompt;
 
 public class MemberValidator {
 
-  Statement stmt;
-
-  public MemberValidator(Statement stmt) {
-    this.stmt = stmt;
-  }
-
-  public String inputMember(String promptTitle) {
+  public static String inputMember(String promptTitle) throws Exception{
 
     while (true) {
       String name = Prompt.inputString(promptTitle);
       if (name.length() == 0) {
         return null;
-      } 
+      }
 
-      try {
-        return this.stmt.executeQuery("member/selectByName", name).next().split(",")[1];
-      } catch (Exception e) {
-        System.out.println("등록된 회원이 아닙니다.");
+      try (Connection con = DriverManager.getConnection(
+          "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
+          PreparedStatement stmt = con.prepareStatement(
+              "select name from pms_member where name like ?")) {
+
+        stmt.setString(1, name);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+          if (!rs.next()) {
+            System.out.println("등록된 회원이 아닙니다.");
+          } else {
+            return name;
+          }
+        }
       }
     }
   }
 
-  public String inputMembers(String promptTitle) {
+  public static String inputMembers(String promptTitle) throws Exception {
     String members = "";
     while (true) {
       String name = inputMember(promptTitle);
