@@ -16,6 +16,7 @@ import com.eomcs.pms.handler.MemberDeleteHandler;
 import com.eomcs.pms.handler.MemberDetailHandler;
 import com.eomcs.pms.handler.MemberListHandler;
 import com.eomcs.pms.handler.MemberUpdateHandler;
+import com.eomcs.pms.handler.MemberValidator;
 import com.eomcs.pms.handler.ProjectAddHandler;
 import com.eomcs.pms.handler.ProjectDeleteHandler;
 import com.eomcs.pms.handler.ProjectDetailHandler;
@@ -72,16 +73,18 @@ public class ClientApp {
     commandMap.put("/member/update", new MemberUpdateHandler());
     commandMap.put("/member/delete", new MemberDeleteHandler());
 
-    commandMap.put("/project/add", new ProjectAddHandler());
+    MemberValidator memberValidator = new MemberValidator();
+
+    commandMap.put("/project/add", new ProjectAddHandler(memberValidator));
     commandMap.put("/project/list", new ProjectListHandler());
     commandMap.put("/project/detail", new ProjectDetailHandler());
-    commandMap.put("/project/update", new ProjectUpdateHandler());
+    commandMap.put("/project/update", new ProjectUpdateHandler(memberValidator));
     commandMap.put("/project/delete", new ProjectDeleteHandler());
 
-    commandMap.put("/task/add", new TaskAddHandler());
+    commandMap.put("/task/add", new TaskAddHandler(memberValidator));
     commandMap.put("/task/list", new TaskListHandler());
     commandMap.put("/task/detail", new TaskDetailHandler());
-    commandMap.put("/task/update", new TaskUpdateHandler());
+    commandMap.put("/task/update", new TaskUpdateHandler(memberValidator));
     commandMap.put("/task/delete", new TaskDeleteHandler());
 
     try {

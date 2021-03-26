@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import com.eomcs.pms.domain.Task;
 
 public class TaskListHandler implements Command {
 
@@ -11,10 +12,10 @@ public class TaskListHandler implements Command {
   public void service() throws Exception {
     System.out.println("[작업 목록]");
 
-    try (Connection con = DriverManager.getConnection( //
+    try (Connection con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
-        PreparedStatement stmt = con.prepareStatement( //
-            "select * from pms_task order by no desc");
+        PreparedStatement stmt = con.prepareStatement(
+            "select no,content,deadline,owner,status from pms_task order by content asc");
         ResultSet rs = stmt.executeQuery()) {
 
       while (rs.next()) {
@@ -22,8 +23,8 @@ public class TaskListHandler implements Command {
             rs.getInt("no"), 
             rs.getString("content"), 
             rs.getDate("deadline"),
-            rs.getString("status"),
-            rs.getString("owner"));
+            rs.getString("owner"),
+            Task.getStatusLabel(rs.getInt("status")));
       }
     }
   }

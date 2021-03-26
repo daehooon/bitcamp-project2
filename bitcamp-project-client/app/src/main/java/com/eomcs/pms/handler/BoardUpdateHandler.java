@@ -32,7 +32,7 @@ public class BoardUpdateHandler implements Command {
           return;
         }
 
-        board.setNo(no);
+        board.setNo(no); 
         board.setTitle(rs.getString("title"));
         board.setContent(rs.getString("content"));
       }

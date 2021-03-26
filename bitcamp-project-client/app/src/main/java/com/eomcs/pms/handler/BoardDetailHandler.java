@@ -17,7 +17,7 @@ public class BoardDetailHandler implements Command {
     try (Connection con = DriverManager.getConnection( //
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
         PreparedStatement stmt = con.prepareStatement( //
-            "select * from pms_board where no=?")) {
+            "select * from pms_board where no = ?")) {
 
       stmt.setInt(1, no);
 
@@ -35,6 +35,7 @@ public class BoardDetailHandler implements Command {
         System.out.printf("좋아요: %s\n", rs.getString("like_cnt"));
       }
     }
+
   }
 }
 
