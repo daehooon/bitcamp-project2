@@ -6,6 +6,7 @@ import com.eomcs.util.Prompt;
 
 public class BoardUpdateHandler implements Command {
 
+
   // 핸들러가 사용할 DAO : 의존 객체(dependency)
   BoardDao boardDao;
 
