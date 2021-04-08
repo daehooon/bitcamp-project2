@@ -7,7 +7,6 @@ import com.eomcs.pms.domain.Board;
 
 public class BoardDaoImpl implements BoardDao {
 
-  // auto commit 객체 받기
   SqlSession sqlSession;
 
   public BoardDaoImpl(SqlSession sqlSession) throws Exception {
