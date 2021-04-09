@@ -35,7 +35,7 @@ public class TaskListHandler implements Command {
     if (projectNo == 0) {
       tasks = taskService.list();
     } else {
-      tasks = taskService.findByProjectNo(projectNo);
+      tasks = taskService.listOfProject(projectNo);
     }
 
     if (tasks.size() == 0) {

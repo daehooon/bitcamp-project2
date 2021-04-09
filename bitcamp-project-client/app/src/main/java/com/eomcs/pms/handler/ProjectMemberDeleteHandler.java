@@ -19,7 +19,7 @@ public class ProjectMemberDeleteHandler implements Command {
 
     int no = Prompt.inputInt("프로젝트 번호? ");
 
-    Project project = projectService.detail(no);
+    Project project = projectService.get(no);
 
     if (project == null) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");
@@ -40,7 +40,7 @@ public class ProjectMemberDeleteHandler implements Command {
     }
 
     // 프로젝트의 기존 멤버를 모두 삭제한다.
-    projectService.memberDelete(no);
+    projectService.deleteMembers(no);
 
     System.out.println("프로젝트 멤버를 삭제하였습니다.");
   }

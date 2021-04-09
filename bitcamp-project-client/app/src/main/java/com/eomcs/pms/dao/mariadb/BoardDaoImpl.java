@@ -42,7 +42,6 @@ public class BoardDaoImpl implements BoardDao {
   public List<Board> findByKeyword(String keyword) throws Exception {
     return sqlSession.selectList("BoardMapper.findByKeyword", keyword);
   }
-
 }
 
 

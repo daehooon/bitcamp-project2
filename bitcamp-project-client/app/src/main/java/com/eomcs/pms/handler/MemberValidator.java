@@ -21,7 +21,7 @@ public class MemberValidator {
         return null;
       } 
 
-      Member m = memberService.findByName(name);
+      Member m = memberService.search(name);
       if (m != null) {
         return m;
       }

@@ -18,7 +18,7 @@ public class MemberUpdateHandler implements Command {
 
     int no = Prompt.inputInt("번호? ");
 
-    Member oldMember = memberService.detail(no);
+    Member oldMember = memberService.get(no);
 
     if (oldMember == null) {
       System.out.println("해당 번호의 회원이 없습니다.");

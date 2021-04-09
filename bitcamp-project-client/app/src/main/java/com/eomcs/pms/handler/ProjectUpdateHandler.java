@@ -22,7 +22,7 @@ public class ProjectUpdateHandler implements Command {
 
     int no = Prompt.inputInt("번호? ");
 
-    Project oldProject = projectService.detail(no);
+    Project oldProject = projectService.get(no);
 
     if (oldProject == null) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");

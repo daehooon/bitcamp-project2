@@ -22,7 +22,7 @@ public class ProjectMemberUpdateHandler implements Command {
 
     int no = Prompt.inputInt("프로젝트 번호? ");
 
-    Project project = projectService.detail(no);
+    Project project = projectService.get(no);
 
     if (project == null) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");
@@ -46,7 +46,8 @@ public class ProjectMemberUpdateHandler implements Command {
       return;
     }
 
-    projectService.memberUpdate(no, members);
+    // 프로젝트의 멤버를 변경한다.
+    projectService.updateMembers(no, members);
 
     System.out.println("프로젝트 멤버를 변경하였습니다.");
   }

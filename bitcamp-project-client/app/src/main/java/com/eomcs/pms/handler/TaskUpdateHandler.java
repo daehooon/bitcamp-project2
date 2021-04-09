@@ -26,7 +26,7 @@ public class TaskUpdateHandler implements Command {
 
     int no = Prompt.inputInt("번호? ");
 
-    Task oldTask = taskService.detail(no);
+    Task oldTask = taskService.get(no);
     if (oldTask == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
       return;

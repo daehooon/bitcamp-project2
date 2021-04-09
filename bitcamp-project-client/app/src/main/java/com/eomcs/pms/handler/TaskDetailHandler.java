@@ -18,7 +18,7 @@ public class TaskDetailHandler implements Command {
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = taskService.detail(no);
+    Task task = taskService.get(no);
 
     if (task == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
