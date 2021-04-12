@@ -9,6 +9,7 @@ public interface ProjectService {
   int add(Project project) throws Exception;
 
   List<Project> list() throws Exception;
+
   Project get(int no) throws Exception;
 
   int update(Project project) throws Exception;
