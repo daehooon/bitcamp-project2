@@ -36,7 +36,7 @@ public class ClientApp {
 
         // 2) 데이터 입출력 스트림 객체를 준비
         PrintWriter out = new PrintWriter(socket.getOutputStream());
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         ) {
 
       while (true) {
@@ -60,7 +60,9 @@ public class ClientApp {
         }
         System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
 
-        if (command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
+        if (command.equalsIgnoreCase("quit") ||
+            command.equalsIgnoreCase("exit") ||
+            command.equalsIgnoreCase("serverstop")) {
           System.out.println("안녕!");
           break;
         }
@@ -69,17 +71,7 @@ public class ClientApp {
     } catch (Exception e) {
       System.out.println("통신 오류 발생!");
     }
+
     Prompt.close();
   }
 }
-
-
-
-
-
-
-
-
-
-
-
