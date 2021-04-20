@@ -5,11 +5,21 @@ public class CommandRequest {
   private String commandPath;
   private String remoteAddr;
   private int remotePort;
+  private Prompt prompt;
+  private Session session;
 
-  public CommandRequest(String commandPath, String remoteArrs, int remotePort) {
+  public CommandRequest(
+      String commandPath,
+      String remoteArrs,
+      int remotePort,
+      Prompt prompt,
+      Session session) {
+
     this.commandPath = commandPath;
     this.remoteAddr = remoteArrs;
     this.remotePort = remotePort;
+    this.prompt = prompt;
+    this.session = session;
   }
 
   public String getCommandPath() {
@@ -22,5 +32,13 @@ public class CommandRequest {
 
   public int getRemotePort() {
     return remotePort;
+  }
+
+  public Prompt getPrompt() {
+    return prompt;
+  }
+
+  public Session getSession() {
+    return session;
   }
 }
