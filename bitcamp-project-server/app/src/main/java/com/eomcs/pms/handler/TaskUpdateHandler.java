@@ -24,6 +24,7 @@ public class TaskUpdateHandler implements Command {
     this.memberValidator = memberValidator;
   }
 
+
   @Override
   public void service(CommandRequest request, CommandResponse response) throws Exception {
     PrintWriter out = response.getWriter();

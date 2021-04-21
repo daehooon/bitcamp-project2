@@ -18,10 +18,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.eomcs.mybatis.MybatisDaoFactory;
+import com.eomcs.mybatis.SqlSessionFactoryProxy;
+import com.eomcs.mybatis.TransactionManager;
 import com.eomcs.pms.dao.BoardDao;
 import com.eomcs.pms.dao.MemberDao;
 import com.eomcs.pms.dao.ProjectDao;
@@ -40,7 +41,6 @@ import com.eomcs.stereotype.Component;
 import com.eomcs.util.CommandRequest;
 import com.eomcs.util.CommandResponse;
 import com.eomcs.util.Prompt;
-import com.eomcs.util.Session;
 
 public class ServerApp {
 
@@ -49,7 +49,7 @@ public class ServerApp {
   // 서버의 상태를 설정
   boolean isStop;
 
-  //객체를 보관할 컨테이너 준비
+  // 객체를 보관할 컨테이너 준비
   Map<String,Object> objMap = new HashMap<>();
 
   public static void main(String[] args) {
@@ -81,30 +81,36 @@ public class ServerApp {
     // => SqlSessionFactory 객체 준비
     SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(mybatisConfigStream);
 
-    // => DAO가 사용할 SqlSession 객체 준비
-    //    - 수동 commit 으로 동작하는 SqlSession 객체를 준비한다.
-    SqlSession sqlSession = sqlSessionFactory.openSession(false);
+    // => 트랜잭션 상태에 따라 SqlSession 객체를 만들어주는 SqlSessionFactory 대행자를 준비한다.
+    SqlSessionFactoryProxy sqlSessionFactoryProxy = new SqlSessionFactoryProxy(sqlSessionFactory);
 
     // 2) DAO 구현체를 자동으로 만들어주는 공장 객체를 준비한다.
-    MybatisDaoFactory daoFactory = new MybatisDaoFactory(sqlSession);
+    // => 오리지널 SqlSessionFactory 대신에 트랜잭션 상태에 따라 SqlSession 객체를 만들어주는
+    //    SqlSessionFactory 대행자를 주입한다.
+    MybatisDaoFactory daoFactory = new MybatisDaoFactory(sqlSessionFactoryProxy);
 
     // 3) 서비스 객체가 사용할 DAO 객체 준비
+    // => DAO 객체는 SqlSession 객체가 필요할 때마다 SqlSessionFactory 대행자에게 요구할 것이다.
     BoardDao boardDao = daoFactory.createDao(BoardDao.class);
     MemberDao memberDao = daoFactory.createDao(MemberDao.class);
     ProjectDao projectDao = daoFactory.createDao(ProjectDao.class);
     TaskDao taskDao = daoFactory.createDao(TaskDao.class);
 
-    // 4) Command 구현체가 사용할 의존 객체 준비
+    // => 서비스 객체가 사용할 트랜잭션 관리자를 준비한다.
+    TransactionManager txManager = new TransactionManager(sqlSessionFactoryProxy);
+
+    // 4) Command 구현체가 사용할 의존 객체(서비스 객체 + 도우미 객체) 준비
     // => 서비스 객체 생성
-    BoardService boardService = new DefaultBoardService(sqlSession, boardDao);
-    MemberService memberService = new DefaultMemberService(sqlSession, memberDao);
-    ProjectService projectService = new DefaultProjectService(sqlSession, projectDao, taskDao);
-    TaskService taskService = new DefaultTaskService(sqlSession, taskDao);
+    // => 기존에 주입하던 SqlSessionFactory 대신 TransactionManager를 주입한다. 
+    BoardService boardService = new DefaultBoardService(boardDao);
+    MemberService memberService = new DefaultMemberService(memberDao);
+    ProjectService projectService = new DefaultProjectService(txManager, projectDao, taskDao);
+    TaskService taskService = new DefaultTaskService(taskDao);
 
     // => 도우미 객체 생성
     MemberValidator memberValidator = new MemberValidator(memberService);
 
-    // => Command 구현체가 사용할 의존 객체를 보관
+    // => Command 구현체가 사용할 의존 객체 보관
     objMap.put("boardService", boardService);
     objMap.put("memberService", memberService);
     objMap.put("projectService", projectService);
@@ -135,11 +141,10 @@ public class ServerApp {
 
     // 스레드풀에 대기하고 있는 모든 스레드를 종료시킨다.
     // => 단 현재 실행 중인 스레드에 대해서는 작업을 완료한 후 종료하도록 설정한다.
-    //
     threadPool.shutdown();
     System.out.println("서버 종료 중...");
 
-    // 만약 현재 실행 중인 스레드를 강제로 종료시키고 싶다면
+    // 만약 현재 실행 중인 스레드를 강제로 종료시키고 싶다면 
     // 다음 코드를 참고하라!
     try {
       if (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
@@ -152,7 +157,7 @@ public class ServerApp {
 
         while (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
           System.out.println("아직 실행 중인 스레드가 있습니다.");
-        }
+        } 
 
         System.out.println("모든 스레드를 종료했습니다.");
       }
@@ -163,7 +168,6 @@ public class ServerApp {
     System.out.println("서버 종료!");
   }
 
-  // 클라이언트가 접속했을 때 스레드가 호출하는 메서드
   public void processRequest(Socket socket) {
     try (
         Socket clientSocket = socket;
@@ -171,14 +175,11 @@ public class ServerApp {
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
         ) {
 
-      // 클라이언트 보낸 명령을 Command 구현체에게 전달하기 쉽도록 객체에 담는다.
+      // 클라이언트가 보낸 명령을 Command 구현체에게 전달하기 쉽도록 객체에 담는다.
       InetSocketAddress remoteAddr = (InetSocketAddress) clientSocket.getRemoteSocketAddress();
 
       // 클라이언트로부터 값을 입력 받을 때 사용할 객체를 준비한다.
       Prompt prompt = new Prompt(in, out);
-
-      // 클라이언트가 접속해 있는 동안 사용할 저장소를 준비한다.
-      Session session = new Session();
 
       while (true) {
         // 클라이언트가 보낸 요청을 읽는다.
@@ -190,26 +191,27 @@ public class ServerApp {
           if (line.length() == 0) {
             break;
           }
-          // 지금은 당장 '요청 명령' 과 '빈 줄' 사이에 존재하는 데이터는 무시한다.
+          // 지금은 '요청 명령' 과 '빈 줄' 사이에 존재하는 데이터는 무시한다.
         }
 
-        // 클라이언트 요청에 대해 기록(log)를 남긴다.
-        System.out.printf("[%s:%d] %s\n",
+        // 클라이언트 요청에 대해 기록(log)을 남긴다.
+        System.out.printf("[%s:%d] %s\n", 
             remoteAddr.getHostString(), remoteAddr.getPort(), requestLine);
+
 
         if (requestLine.equalsIgnoreCase("serverstop")) {
           out.println("Server stopped!");
           out.println();
           out.flush();
           terminate();
-          return;
+          return; 
         }
 
         if (requestLine.equalsIgnoreCase("exit") || requestLine.equalsIgnoreCase("quit")) {
           out.println("Goodbye!");
           out.println();
           out.flush();
-          break;
+          return;
         }
 
         // 클라이언트의 요청을 처리할 Command 구현체를 찾는다.
@@ -222,11 +224,10 @@ public class ServerApp {
         }
 
         CommandRequest request = new CommandRequest(
-            requestLine,
+            requestLine, 
             remoteAddr.getHostString(),
-            remoteAddr.getPort(),
-            prompt,
-            session);
+            remoteAddr.getPort(), 
+            prompt);
 
         CommandResponse response = new CommandResponse(out);
 
@@ -235,6 +236,7 @@ public class ServerApp {
           command.service(request, response);
         } catch (Exception e) {
           out.println("서버 오류 발생!");
+          e.printStackTrace();
         }
         out.println();
         out.flush();
@@ -252,11 +254,10 @@ public class ServerApp {
     isStop = true;
 
     // 그리고 서버가 즉시 종료할 수 있도록 임의의 접속을 수행한다.
-    // => 스스로 클라이어느가 되어 ServerSocket 에 접속하면
+    // => 스스로 클라이언트가 되어 ServerSocket 에 접속하면 
     //    accept()에서 리턴하기 때문에 isStop 변수의 상태에 따라 반복문을 멈출 것이다.
-
     try (Socket socket = new Socket("localhost", 8888)) {
-      // 서버를 종료시키기 위해 임의로 접속하는 것이기 때문에 특별히 추가로 해야할 일이 없다.
+      // 서버를 종료시키기 위해 임의로 접속하는 것이기 때문에 특별히 추가로 해야 할 일이 없다.
     } catch (Exception e) {}
   }
 
@@ -378,20 +379,3 @@ public class ServerApp {
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

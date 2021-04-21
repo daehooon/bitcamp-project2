@@ -33,7 +33,7 @@ public class TaskListHandler implements Command {
       if (input.length() != 0) {
         projectNo = Integer.parseInt(input);
       }
-    } catch (Exception e) {
+    }catch (Exception e) {
       out.println("프로젝트 번호를 입력하세요.");
       return;
     }
