@@ -27,11 +27,11 @@ public class BoardDetailHandler extends GenericServlet {
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
 
-    int no = Integer.parseInt(request.getParameter("no"));
-
     out.println("[게시글 상세보기]");
 
     try {
+      int no = Integer.parseInt(request.getParameter("no"));
+
       Board b = boardService.get(no);
       if (b == null) {
         out.println("해당 번호의 게시글이 없습니다.");
