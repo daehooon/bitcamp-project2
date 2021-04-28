@@ -25,7 +25,6 @@ public class ProjectListHandler implements Servlet {
 
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
-
     out.println("[프로젝트 목록]");
 
     try {
@@ -51,14 +50,13 @@ public class ProjectListHandler implements Servlet {
             p.getEndDate(),
             p.getOwner().getName(),
             strBuilder.toString());
-      }
-    } catch (Exception e) {
-      // 상세 오류 내용을 StringWriter로 출력한다.
+
+      } 
+
+    }catch (Exception e) {
       StringWriter strWriter = new StringWriter();
       PrintWriter printWriter = new PrintWriter(strWriter);
       e.printStackTrace(printWriter);
-
-      // StringWriter 에 들어있는 출력 내용을 꺼내 클라이언트로 보낸다.
       out.println(strWriter.toString());
     }
   }

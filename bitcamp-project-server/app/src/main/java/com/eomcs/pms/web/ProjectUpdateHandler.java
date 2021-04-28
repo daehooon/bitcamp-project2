@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -55,16 +54,7 @@ public class ProjectUpdateHandler extends HttpServlet {
       project.setEndDate(Date.valueOf(request.getParameter("endDate")));
       project.setOwner(loginUser);
 
-      // 프로젝트 팀원 정보를 입력 받는다.
-      StringBuilder strBuilder = new StringBuilder();
-      List<Member> members = oldProject.getMembers();
-      for (Member m : members) {
-        if (strBuilder.length() > 0) {
-          strBuilder.append("/");
-        }
-        strBuilder.append(m.getName());
-      }
-
+      // ...&member=1&member=18&member=23
       String[] values = request.getParameterValues("member");
       ArrayList<Member> memberList = new ArrayList<>();
       for (String value : values) {

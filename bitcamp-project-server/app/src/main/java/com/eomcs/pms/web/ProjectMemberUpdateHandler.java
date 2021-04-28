@@ -44,6 +44,7 @@ public class ProjectMemberUpdateHandler extends HttpServlet {
         return;
       }
 
+      // ...&member=1&member=18&member=23
       String[] values = request.getParameterValues("member");
       ArrayList<Member> memberList = new ArrayList<>();
       for (String value : values) {

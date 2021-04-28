@@ -17,20 +17,19 @@ public class MemberUpdateHandler extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException { 
+      throws ServletException, IOException {
 
     MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
 
-    out.println("[회원 변경]");
-
     try {
+      out.println("[회원 변경]");
+
       int no = Integer.parseInt(request.getParameter("no"));
 
       Member oldMember = memberService.get(no);
-
       if (oldMember == null) {
         out.println("해당 번호의 회원이 없습니다.");
         return;

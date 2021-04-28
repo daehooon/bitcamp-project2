@@ -24,9 +24,9 @@ public class MemberAddHandler extends HttpServlet {
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
 
-    out.println("[회원 등록]");
-
     try {
+      out.println("[회원 등록]");
+
       Member m = new Member();
       m.setName(request.getParameter("name"));
       m.setEmail(request.getParameter("email"));
@@ -37,7 +37,6 @@ public class MemberAddHandler extends HttpServlet {
       memberService.add(m);
 
       out.println("회원을 등록하였습니다.");
-
     } catch (Exception e) {
       StringWriter strWriter = new StringWriter();
       PrintWriter printWriter = new PrintWriter(strWriter);

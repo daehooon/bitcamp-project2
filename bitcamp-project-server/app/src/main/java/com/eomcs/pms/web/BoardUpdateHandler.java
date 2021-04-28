@@ -47,6 +47,7 @@ public class BoardUpdateHandler extends HttpServlet {
       board.setTitle(request.getParameter("title"));
       board.setContent(request.getParameter("content"));
 
+
       boardService.update(board);
 
       out.println("게시글을 변경하였습니다.");

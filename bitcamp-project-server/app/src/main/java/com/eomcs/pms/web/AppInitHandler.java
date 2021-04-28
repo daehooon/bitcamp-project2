@@ -29,10 +29,10 @@ import com.eomcs.pms.service.impl.DefaultProjectService;
 import com.eomcs.pms.service.impl.DefaultTaskService;
 
 @WebServlet(
-    value="/init",  // 클라이언트에서 요청할 때 사용할 명령이다.
-    loadOnStartup = 1   // 톰캣 서버를 실행할 때 이 객체를 생성하라고 지정한다.
+    value="/init",   // 클라인언트에서 요청할 때 사용할 명령이다.
+    loadOnStartup = 1 // 톰캣 서버를 실행할 때 이 객체를 생성하라고 지정한다.
     )
-// loadOnStartup 이 지정되지 않은 경우
+// loadOnStartup 이 지정되지 않은 경우, 
 // 클라이언트가 실행을 요청할 때 서블릿 객체를 생성한다.
 // 물론 한 번 객체를 생성하면 그 생성된 객체를 계속 사용한다.
 // 즉 두 개의 객체를 생성하진 않는다.
@@ -40,7 +40,7 @@ public class AppInitHandler implements Servlet {
 
   @Override
   public void init(ServletConfig config) throws ServletException {
-    // 서블릿 객체를 생성할 때 톰캣 서버가 호출하는 메세드
+    // 서블릿 객체를 생성할 때 톰캣 서버가 호출하는 메서드
     // => 보통 서블릿들이 사용할 의존 객체를 준비하는 등의 일을 한다.
 
     try {
@@ -98,4 +98,5 @@ public class AppInitHandler implements Servlet {
   public void service(ServletRequest request, ServletResponse response)
       throws ServletException, IOException {
   }
+
 }

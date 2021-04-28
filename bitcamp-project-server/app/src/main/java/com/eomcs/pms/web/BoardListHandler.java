@@ -45,7 +45,7 @@ public class BoardListHandler implements Servlet {
       PrintWriter printWriter = new PrintWriter(strWriter);
       e.printStackTrace(printWriter);
 
-      // StringWriter 에 들어있는 출력 내용을 꺼내 클라이언트로 보낸다.
+      // StringWriter 에 들어 있는 출력 내용을 꺼내 클라이언트로 보낸다.
       out.println(strWriter.toString());
     }
   }

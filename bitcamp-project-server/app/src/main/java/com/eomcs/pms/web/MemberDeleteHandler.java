@@ -33,7 +33,6 @@ public class MemberDeleteHandler extends HttpServlet {
       } else {
         out.println("회원을 삭제하였습니다.");
       }
-
     } catch (Exception e) {
       StringWriter strWriter = new StringWriter();
       PrintWriter printWriter = new PrintWriter(strWriter);

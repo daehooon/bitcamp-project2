@@ -39,7 +39,7 @@ public class ProjectAddHandler extends HttpServlet {
       Member loginUser = (Member) request.getSession().getAttribute("loginUser");
       p.setOwner(loginUser);
 
-      // ...&member=1&member=23
+      // ...&member=1&member=18&member=23
       String[] values = request.getParameterValues("member");
       ArrayList<Member> memberList = new ArrayList<>();
       for (String value : values) {

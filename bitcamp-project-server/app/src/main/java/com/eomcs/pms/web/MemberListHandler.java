@@ -13,19 +13,17 @@ import javax.servlet.annotation.WebServlet;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.service.MemberService;
 
-@WebServlet("/member/list")
+@WebServlet("/member/list") 
 public class MemberListHandler implements Servlet {
 
   @Override
   public void service(ServletRequest request, ServletResponse response)
       throws ServletException, IOException {
-    // 클라이언트가 /board/list 를 요청하면 톰캣 서버가 이 메서드를 호출한다. 
 
     MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
-
     out.println("[회원 목록]");
 
     try {
@@ -40,12 +38,9 @@ public class MemberListHandler implements Servlet {
             m.getTel());
       }
     } catch (Exception e) {
-      // 상세 오류 내용을 StringWriter로 출력한다.
       StringWriter strWriter = new StringWriter();
       PrintWriter printWriter = new PrintWriter(strWriter);
       e.printStackTrace(printWriter);
-
-      // StringWriter 에 들어있는 출력 내용을 꺼내 클라이언트로 보낸다.
       out.println(strWriter.toString());
     }
   }
