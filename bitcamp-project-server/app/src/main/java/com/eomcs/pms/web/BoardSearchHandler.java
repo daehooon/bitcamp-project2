@@ -75,7 +75,8 @@ public class BoardSearchHandler extends HttpServlet {
       StringWriter strWriter = new StringWriter();
       PrintWriter printWriter = new PrintWriter(strWriter);
       e.printStackTrace(printWriter);
-      out.println(strWriter.toString());
+
+      out.printf("<pre>%s</pre>\n", strWriter.toString());
     }
 
     out.println("</body>");

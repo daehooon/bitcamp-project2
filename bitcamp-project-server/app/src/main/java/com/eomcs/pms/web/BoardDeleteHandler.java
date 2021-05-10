@@ -49,7 +49,7 @@ public class BoardDeleteHandler extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>게시글 삭제</h1>");
-      out.println("<p>게시글을 삭제하였습니다.<p>");
+      out.println("<p>게시글을 삭제하였습니다.</p>");
 
     } catch (Exception e) {
       StringWriter strWriter = new StringWriter();
@@ -59,6 +59,7 @@ public class BoardDeleteHandler extends HttpServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>게시글 삭제 오류</h1>");
+      out.printf("<p>%s</p>\n", e.getMessage());
       out.printf("<pre>%s</pre>\n", strWriter.toString());
       out.println("<p><a href='list'>목록</a></p>");
     }
