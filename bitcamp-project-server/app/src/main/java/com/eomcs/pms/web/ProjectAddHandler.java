@@ -44,14 +44,16 @@ public class ProjectAddHandler extends HttpServlet {
     out.println("종료일: <input type='date' name='endDate'><br>");
     out.println("팀원: <br>");
     try {
-      List<Member> members = memberService.list();
+      List<Member> members = memberService.list(null);
       for (Member m : members) {
         out.printf("  <input type='checkbox' name='member' value='%d'>%s<br>\n", m.getNo(), m.getName());
       }
     } catch (Exception e) {
       throw new ServletException(e);
     }
-    out.println("<input type='submit' value='등록'>");
+    out.println("<p><input type='submit' value='등록'>");
+    out.println("<a href='list'>목록</a></p>");
+
     out.println("</form>");
     out.println("</body>");
     out.println("</html>");
@@ -62,17 +64,6 @@ public class ProjectAddHandler extends HttpServlet {
       throws ServletException, IOException {
 
     ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
-
-    // 클라이언트가 POST 요청으로 보낸 데이터가 UTF-8임을 알려준다.
-    request.setCharacterEncoding("UTF-8");
-
-    response.setContentType("text/html;charset=UTF-8");
-    PrintWriter out = response.getWriter();
-
-    out.println("<!DOCTYPE html>");
-    out.println("<html>");
-    out.println("<head>");
-    out.println("<title>프로젝트 등록</title>");
 
     try {
       Project p = new Project();
@@ -87,35 +78,39 @@ public class ProjectAddHandler extends HttpServlet {
       // ...&member=1&member=18&member=23
       String[] values = request.getParameterValues("member");
       ArrayList<Member> memberList = new ArrayList<>();
-      for (String value : values) {
-        Member member = new Member();
-        member.setNo(Integer.parseInt(value));
-        memberList.add(member);
+      if (values != null) {
+        for (String value : values) {
+          Member member = new Member();
+          member.setNo(Integer.parseInt(value));
+          memberList.add(member);
+        }
       }
       p.setMembers(memberList);
 
       projectService.add(p);
 
-      out.println("<meta http-equiv='Refresh' content='1;url=list'>");
-      out.println("</head>");
-      out.println("<body>");
-      out.println("<h1>프로젝트 등록</h1>");
-      out.println("<p>프로젝트를 등록했습니다.</p>");
+      response.sendRedirect("list");
 
     } catch (Exception e) {
       StringWriter strWriter = new StringWriter();
       PrintWriter printWriter = new PrintWriter(strWriter);
       e.printStackTrace(printWriter);
 
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
+
+      out.println("<!DOCTYPE html>");
+      out.println("<html>");
+      out.println("<head>");
+      out.println("<title>프로젝트 등록</title>");
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>프로젝트 등록 오류</h1>");
       out.printf("<pre>%s</pre>\n", strWriter.toString());
       out.println("<p><a href='list'>목록</a></p>");
+      out.println("</body>");
+      out.println("</html>");
     }
-
-    out.println("</body>");
-    out.println("</html>");
   }
 }
 
