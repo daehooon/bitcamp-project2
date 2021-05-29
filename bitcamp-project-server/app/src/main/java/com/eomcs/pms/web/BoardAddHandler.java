@@ -19,6 +19,7 @@ public class BoardAddHandler {
 
   @RequestMapping("/board/add")
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
     if (request.getMethod().equals("GET")) {
       return "/jsp/board/form.jsp";
     }

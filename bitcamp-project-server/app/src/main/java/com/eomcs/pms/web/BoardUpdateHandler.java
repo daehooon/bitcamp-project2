@@ -18,8 +18,7 @@ public class BoardUpdateHandler {
   }
 
   @RequestMapping("/board/update")
-  public String execute (HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
     int no = Integer.parseInt(request.getParameter("no"));
 
     Board oldBoard = boardService.get(no);

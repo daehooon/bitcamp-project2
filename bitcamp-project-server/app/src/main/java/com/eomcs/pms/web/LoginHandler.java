@@ -19,9 +19,10 @@ public class LoginHandler {
 
   @RequestMapping("/login")
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
     if (request.getMethod().equals("GET")) {
       return "/jsp/login_form.jsp";
-    }
+    } 
 
     String email = request.getParameter("email");
     String password = request.getParameter("password");

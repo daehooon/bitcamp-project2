@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import com.eomcs.pms.dao.ProjectDao;
@@ -22,17 +21,16 @@ public class DefaultProjectService implements ProjectService {
   ProjectDao projectDao;
   TaskDao taskDao;
 
-  public DefaultProjectService(PlatformTransactionManager txManager, ProjectDao projectDao, TaskDao taskDao) {
+  public DefaultProjectService(PlatformTransactionManager  txManager, ProjectDao projectDao, TaskDao taskDao) {
     this.transactionTemplate = new TransactionTemplate(txManager);
     this.projectDao = projectDao;
     this.taskDao = taskDao;
   }
 
-  // 등록 업무
-  @Transactional
+  // 등록 업무 
   @Override
   public int add(Project project) throws Exception {
-    return transactionTemplate.execute(new TransactionCallback<Integer>() {
+    return transactionTemplate.execute(new TransactionCallback<Integer>(){
       @Override
       public Integer doInTransaction(TransactionStatus status) {
         try {

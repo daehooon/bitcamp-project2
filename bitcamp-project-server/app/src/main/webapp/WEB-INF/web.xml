@@ -24,11 +24,11 @@
   <servlet>
     <servlet-name>DispatcherServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param> <!-- 프론트 컨트롤러가 사용할 빈 컨테이너에 클래스를 지정한다. -->
+    <init-param> <!-- 프론트 컨트롤러가 사용할 빈 컨테이너의 클래스를 지정한다. -->
       <param-name>contextClass</param-name>
       <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
     </init-param>
-    <init-param> <!-- 빈 컨테이너에 설정 정보를 다루는 클래스를 지정한다. -->
+    <init-param> <!-- 빈 컨테이너의 설정 정보를 다루는 클래스를 지정한다. -->
       <param-name>contextConfigLocation</param-name>
       <param-value>com.eomcs.pms.config.AppConfig</param-value>
     </init-param>
@@ -37,7 +37,6 @@
       <max-file-size>10000000</max-file-size>
     </multipart-config>
   </servlet>
-  
   <servlet-mapping>
     <servlet-name>DispatcherServlet</servlet-name>
     <url-pattern>/app/*</url-pattern>

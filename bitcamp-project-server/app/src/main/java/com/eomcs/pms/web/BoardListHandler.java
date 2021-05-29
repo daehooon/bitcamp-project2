@@ -28,8 +28,8 @@ public class BoardListHandler {
       boards = boardService.list();
     }
 
-    // JSP가 사용할 수 있도록 ServletRequest 보관소에 저장한다.
     request.setAttribute("list", boards);
+
     return "/jsp/board/list.jsp";
   }
 }

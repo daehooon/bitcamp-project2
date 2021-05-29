@@ -16,20 +16,20 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-// 프론트 컨트롤러는 페이지 컨트롤러와 페이지 컨트롤러가 사용하는 의존하는 객체를 생성하기 위해
-// 빈 컨테이너를 생성한다.
+// 프론트 컨트롤러는 페이지 컨트롤러와 페이지 컨트롤러가 의존하는 객체를 생성하기 위해
+// 빈 컨테이너를 사용한다.
 // 빈 컨테이너는 개발자가 지정한 설정에 맞춰 객체를 생성한다.
-// 다음 클래스는 빈 컨테이너에 행동을 제어하는 클래스이다.
-//
+// 다음 클래스를 빈 컨테이너의 행동을 제어하는 클래스이다.
+// 
 // 제어하는 방법
 // - 클래스 선언에 애노테이션을 붙여서 제어한다.
 // - 클래스에 필드나 메서드를 추가하여 제어한다.
-//
+// 
 
 // 1) 빈 컨테이너가 자동으로 객체를 생성해야 하는 패키지를 등록한다.
 @ComponentScan("com.eomcs.pms")
 
-// 2) Spring WebMVC 관련 객체를 찾아서 등록하는 기능을 활성화 시킨다.
+// 2) Spring WebMVC 관련 객체를 찾아서 등록하는 기능을 활성화시킨다.
 @EnableWebMvc
 
 // 3) JDBC 정보를 담고 있는 프로퍼티 파일을 로딩한다.
@@ -69,7 +69,7 @@ public class AppConfig {
 
   // 6) 트랜잭션 관리자 생성
   // => commit/rollback 을 다룬다.
-  @Bean
+  @Bean 
   public PlatformTransactionManager transactionManager(DataSource dataSource) {
     return new DataSourceTransactionManager(dataSource);
   }
@@ -90,7 +90,7 @@ public class AppConfig {
 
     // mybatis 설정 파일을 XML 파일로 따로 두지 말고,
     // 다음과 같이 자바 코드로 설정하면 편하다.
-    //
+    // 
     sqlSessionFactoryBean.setTypeAliasesPackage("com.eomcs.pms.domain");
     sqlSessionFactoryBean.setMapperLocations(
         appCtx.getResources("classpath:com/eomcs/pms/mapper/*Mapper.xml"));
@@ -98,3 +98,10 @@ public class AppConfig {
   }
 
 }
+
+
+
+
+
+
+
