@@ -21,7 +21,7 @@ public class DefaultProjectService implements ProjectService {
   ProjectDao projectDao;
   TaskDao taskDao;
 
-  public DefaultProjectService(PlatformTransactionManager  txManager, ProjectDao projectDao, TaskDao taskDao) {
+  public DefaultProjectService(PlatformTransactionManager txManager, ProjectDao projectDao, TaskDao taskDao) {
     this.transactionTemplate = new TransactionTemplate(txManager);
     this.projectDao = projectDao;
     this.taskDao = taskDao;
